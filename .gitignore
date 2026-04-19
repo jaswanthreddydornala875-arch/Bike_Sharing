@@ -1,9 +1,0 @@
-# .gitignore
-
-
-### VS Code ###
-
-.vscode/
-.venv/
-.venv.local
-.env.*
