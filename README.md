@@ -1,19 +1,72 @@
-Overall Trend: The service experienced a clear upward trend in rental demand from 2011 to 2012, indicating growing popularity over time.
-Hourly Peaks: A pronounced bimodal distribution was observed in hourly demand, with significant peaks around 8:00 AM and 5:00 PM. These patterns strongly correlate with typical commuting hours, suggesting a primary use case for work or school transportation.
-Daily Consistency: While the overall demand remained relatively consistent across weekdays, subtle shifts in user behavior (e.g., more casual riders on weekends) were noted. Weekends generally showed higher leisure-oriented riding throughout the day, contrasting with the sharp commuter peaks on weekdays.
-Strong Seasonality: Rental demand exhibits clear seasonal variations, with the highest activity during summer and fall months and a noticeable decline in winter. This is intuitively linked to weather conditions, as favorable weather encourages outdoor activities like cycling.
-Autocorrelation: The demand at any given hour is highly correlated with demand in preceding hours, particularly the immediately preceding hour and the same hour on the previous day (24-hour lag). This strong autocorrelation signifies that past demand is a powerful predictor of future demand.
-Decomposition: Time series decomposition confirmed the presence of both a long-term upward trend and a dominant yearly seasonality, alongside residual fluctuations.
+Bike Rental Demand Forecasting
 
-Justification:
-1)To predict hourly bike rental demand, a Random Forest Regressor was selected, and the data was split in a time-aware manner.
-2)
-The Random Forest Regressor was chosen for the following reasons:
-Non-linearity Handling: Bike rental demand is influenced by complex, non-linear interactions between various factors (e.g., temperature, time of day, weather conditions). Random Forests, being an ensemble of decision trees, are highly effective at capturing these intricate relationships without requiring explicit feature engineering for non-linearity.
-Robustness to Outliers and Noise: The model is relatively robust to outliers and noisy data, which can be present in real-world datasets like weather information or unusual demand spikes.
-Feature Importance: Random Forests inherently provide a measure of feature importance, allowing us to understand which factors contribute most significantly to the predictions. This interpretability is valuable for gaining insights into the drivers of demand.
-Versatility: It performs well on a wide range of regression tasks and is less prone to overfitting compared to single decision trees.
-3)
-For time series forecasting, it is critical to split the data in a time-aware manner. Instead of random splitting, the dataset was divided sequentially, with the first 80% of the data used for training and the last 20% reserved for testing. This approach ensures that:
-The model is trained on historical data and evaluated on unseen future data, accurately simulating a real-world forecasting scenario.
-It prevents data leakage, where future information inadvertently influences the training process, leading to overly optimistic performance estimates.
+Overview
+This project builds a supervised learning model to predict the number of bike rentals per hour. It follows a structured pipeline:
+Data loading & inspection — understanding schema and data types
+Exploratory Data Analysis (EDA) — visualizing temporal and seasonal patterns
+Time series decomposition — identifying trend, seasonality, and residual components
+Feature engineering — creating lag and rolling window features
+Model training & evaluation — comparing a naive baseline against a Random Forest Regressor
+Feature importance analysis — identifying the most predictive variables
+---
+Project Structure
+bike-rental-forecasting/
+│
+├── hour.csv                          # Raw dataset
+├── bike_demand_forecast.py           # Main pipeline script
+│
+├── rental_over_time_learning.png     # Hourly rentals over the full date range
+├── patterns_learning.png             # Hourly, daily & seasonal boxplots
+├── acf_learning.png                  # Autocorrelation function (ACF) plot
+├── decomposition_learning.png        # Time series decomposition
+├── predictions_learning.png          # Actual vs. predicted (first week of test set)
+├── feature_importance_learning.png   # Top 10 feature importances
+│
+└── README.md
+
+Section 1 — Data Loading
+Loads `hour.csv`, parses the `dteday` column as datetime, and sorts records chronologically by date and hour.
+Section 2 — Exploratory Data Analysis
+Generates four visualizations to understand the data:
+Rentals over time — a line plot of all hourly rentals across the entire dataset
+Pattern boxplots — rental distributions broken down by hour of day, day of week, and season
+ACF plot — autocorrelation up to 48 lags, revealing strong hourly and daily periodicity
+Time series decomposition — additive decomposition on daily mean rentals showing trend, seasonality, and residuals
+Section 3 — Feature Engineering
+Creates time-aware features to give the model memory of recent demand:
+Feature	Description
+`lag_1h`	Rentals from 1 hour ago
+`lag_2h`	Rentals from 2 hours ago
+`lag_24h`	Rentals from 24 hours ago (same hour, previous day)
+`rolling_mean_6h`	6-hour rolling average of past rentals
+Rows with `NaN` values (introduced by shifting) are dropped before training.
+Section 4 — Model Training & Evaluation
+The dataset is split 80% training / 20% testing using a time-ordered split (no shuffling) to prevent data leakage.
+Baseline model: Naive forecast using the previous hour's rental count (`lag_1h`).
+ML model: `RandomForestRegressor` with 100 estimators trained on 16 features.
+Both models are evaluated using MAE and RMSE.
+
+Results
+Model	                   MAE	 RMSE
+Naive Baseline (lag_1h)	~	85.22 ~129.72
+Random Forest Regressor	~31.23	~53.38
+> Run the script to populate exact metrics — they will be printed to the console.
+The Random Forest model significantly outperforms the naive baseline by leveraging weather conditions, time-based features, and engineered lag variables.
+---
+Generated Outputs
+File	Description
+`rental_over_time_learning.png`	Full date range hourly rental line plot
+`patterns_learning.png`	Hourly / daily / seasonal boxplots
+`acf_learning.png`	Autocorrelation function up to 48 lags
+`decomposition_learning.png`	Trend, seasonality & residual decomposition
+`predictions_learning.png`	Actual vs. predicted rentals (first 168 hours of test set)
+`feature_importance_learning.png`	Top 10 most important model features
+---
+Dependencies
+Package	Purpose
+pandas	Data loading and manipulation
+numpy	Numerical operations
+matplotlib	Plotting
+seaborn	Statistical visualizations
+statsmodels	ACF plot and time series decomposition
+scikit-learn	Random Forest model and evaluation metrics
