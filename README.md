@@ -10,6 +10,7 @@ Model training & evaluation — comparing a naive baseline against a Random Fore
 Feature importance analysis — identifying the most predictive variables
 ---
 Project Structure
+```
 bike-rental-forecasting/
 │
 ├── hour.csv                          # Raw dataset
@@ -45,11 +46,11 @@ The dataset is split 80% training / 20% testing using a time-ordered split (no s
 Baseline model: Naive forecast using the previous hour's rental count (`lag_1h`).
 ML model: `RandomForestRegressor` with 100 estimators trained on 16 features.
 Both models are evaluated using MAE and RMSE.
-
+---
 Results
-Model	                   MAE	 RMSE
-Naive Baseline (lag_1h)	~	85.22 ~129.72
-Random Forest Regressor	~31.23	~53.38
+Model	MAE	RMSE
+Naive Baseline (lag_1h)	~XX.XX	~XX.XX
+Random Forest Regressor	~XX.XX	~XX.XX
 > Run the script to populate exact metrics — they will be printed to the console.
 The Random Forest model significantly outperforms the naive baseline by leveraging weather conditions, time-based features, and engineered lag variables.
 ---
@@ -64,9 +65,9 @@ File	Description
 ---
 Dependencies
 Package	Purpose
-pandas	Data loading and manipulation
-numpy	Numerical operations
-matplotlib	Plotting
-seaborn	Statistical visualizations
-statsmodels	ACF plot and time series decomposition
-scikit-learn	Random Forest model and evaluation metrics
+`pandas`	Data loading and manipulation
+`numpy`	Numerical operations
+`matplotlib`	Plotting
+`seaborn`	Statistical visualizations
+`statsmodels`	ACF plot and time series decomposition
+`scikit-learn`	Random Forest model and evaluation metrics
