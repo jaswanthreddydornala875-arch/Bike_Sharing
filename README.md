@@ -48,9 +48,9 @@ ML model: `RandomForestRegressor` with 100 estimators trained on 16 features.
 Both models are evaluated using MAE and RMSE.
 ---
 Results
-Model	MAE	RMSE
-Naive Baseline (lag_1h)	~XX.XX	~XX.XX
-Random Forest Regressor	~XX.XX	~XX.XX
+Model	                    MAE	   RMSE
+Naive Baseline (lag_1h)	~85.22	~129.72
+Random Forest Regressor	~31.23	~53.3
 > Run the script to populate exact metrics — they will be printed to the console.
 The Random Forest model significantly outperforms the naive baseline by leveraging weather conditions, time-based features, and engineered lag variables.
 ---
